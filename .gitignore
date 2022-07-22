@@ -3,3 +3,4 @@
 /out/
 /out/production/classes/!/.idea/
 *.class
+!/.idea/
