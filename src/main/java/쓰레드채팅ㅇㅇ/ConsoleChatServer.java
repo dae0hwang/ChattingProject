@@ -1,4 +1,4 @@
-package 쓰레드채팅;
+package 쓰레드채팅ㅇㅇ;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +62,7 @@ public class ConsoleChatServer implements Runnable {
                     remove(sock);
                 }
                 fromClient = null;
-                fromClient = null;
+                toClient = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -82,6 +82,7 @@ public class ConsoleChatServer implements Runnable {
             ConsoleChatServer myServer = new ConsoleChatServer(client);
             Thread myServerThread = new Thread(myServer);
             myServerThread.start();
+            //
 
         }
     }

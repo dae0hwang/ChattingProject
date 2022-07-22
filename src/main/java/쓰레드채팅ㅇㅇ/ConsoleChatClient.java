@@ -1,4 +1,4 @@
-package 쓰레드채팅;
+package 쓰레드채팅ㅇㅇ;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,8 +10,12 @@ class ServerHandler implements Runnable {
     public ServerHandler(Socket sock) {
         this.sock = sock;
     }
+
     @Override
     public void run() {
+        //받은 갯수
+        ThreadLocal<Integer> receiveNum = new ThreadLocal<>();
+        receiveNum.set(0);
         InputStream fromServer = null;
         try {
             fromServer = sock.getInputStream();
@@ -21,6 +25,9 @@ class ServerHandler implements Runnable {
 
             while ((count = fromServer.read(buf)) != -1) {
                 System.out.write(buf, 0, count);
+                //받은개수
+                receiveNum.set(receiveNum.get() + 1);
+                System.out.println(receiveNum.get());
 
             }
         } catch (IOException e) {
@@ -41,10 +48,15 @@ class ServerHandler implements Runnable {
 }
 
 public class ConsoleChatClient {
+
     public static void main(String[] args) {
         Socket sock = null;
 
         try {
+            //보낸 갯수
+            ThreadLocal<Integer> sendNum = new ThreadLocal<>();
+            sendNum.set(0);
+
             sock = new Socket("127.0.0.1", 9999);
             System.out.println(sock + ": 연결 됨");
 
@@ -61,6 +73,9 @@ public class ConsoleChatClient {
 
             while ((count = System.in.read(buf)) != -1) {
                 toServer.write(buf, 0, count);
+                //애매하다.
+                sendNum.set(sendNum.get()+1);
+                System.out.println(sendNum.get());
                 toServer.flush();
             }
         } catch (IOException e) {

@@ -28,6 +28,9 @@ public class MySocketServer implements Runnable {
             OutputStream out = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(out, true);
 
+            //서버 작성
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
             //이름 입력해달라고함.
             writer.println("서버에 연결되었습니다. 이름을 등록해주세요");
 
@@ -48,6 +51,14 @@ public class MySocketServer implements Runnable {
                     out = list.get(i).getOutputStream();
                     writer = new PrintWriter(out, true);
                     writer.println(name + ": " + readValue);
+                }
+
+                //서버가 보냄
+                String str = br.readLine();
+                for (int i = 0; i < list.size(); i++) {
+                    out = list.get(i).getOutputStream();
+                    writer = new PrintWriter(out, true);
+                    writer.println("server" + ": " + str);
                 }
 
             }
