@@ -1,4 +1,4 @@
-package 쓰레드채팅ㅇㅇ;
+package 쓰레드n명채팅;
 
 import java.io.IOException;
 import java.io.InputStream;
