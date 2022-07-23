@@ -27,7 +27,7 @@ class ServerHandler implements Runnable {
                 System.out.write(buf, 0, count);
                 //받은개수
                 receiveNum.set(receiveNum.get() + 1);
-                System.out.println(receiveNum.get());
+                System.out.println("받은개수: " + receiveNum.get());
 
             }
         } catch (IOException e) {
@@ -73,9 +73,9 @@ public class ConsoleChatClient {
 
             while ((count = System.in.read(buf)) != -1) {
                 toServer.write(buf, 0, count);
-                //애매하다.
+                //보낸갯수 저장.
                 sendNum.set(sendNum.get()+1);
-                System.out.println(sendNum.get());
+                System.out.println("보낸개수: "+ sendNum.get());
                 toServer.flush();
             }
         } catch (IOException e) {

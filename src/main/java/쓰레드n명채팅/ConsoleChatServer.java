@@ -38,6 +38,7 @@ public class ConsoleChatServer implements Runnable {
             fromClient = sock.getInputStream();
 
             byte[] buf = new byte[1024];
+            //여기서 클라이언트 버퍼 분석하면 되겠다.
             int count;
             //인풋스트림 들어온데이터 버퍼에 넣고 갯수 반환
             //-1이란 것은 클라가 완전히 종료했을 때를 의미
