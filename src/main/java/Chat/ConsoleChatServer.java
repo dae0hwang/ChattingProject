@@ -51,6 +51,7 @@ class ConsoleChatServer extends Thread {
                         toClient = s.getOutputStream();
                         toClient.write(buf, 0, count);
                         toClient.flush();
+                        System.out.println("서버가 클라한테보낸거 log");
                     }
                 }
                 System.out.write(buf, 0, count);

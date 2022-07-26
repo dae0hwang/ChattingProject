@@ -24,6 +24,7 @@ public class MySocketServer implements Runnable {
             InputStream input = socket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
+
             //서버에서 클라로 보내는 메세지 저장소
             OutputStream out = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(out, true);
