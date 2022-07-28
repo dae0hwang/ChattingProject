@@ -13,6 +13,9 @@ public class Server implements Runnable {
     //이거 lcok처리 해줘야함.
     private static ArrayList<Socket> clients = new ArrayList(5);
 
+    //각 클라이언트가 보낸 메세지 수
+    private static ThreadLocal<Integer> sendNum = new ThreadLocal<>();
+
     Server(Socket sock) {
         this.sock = sock;
     }
@@ -30,6 +33,7 @@ public class Server implements Runnable {
     //각 서버 소켓들 스레드 동시진행
     //클라한테 바이트 인풋하고 -> 스트링해석 -> 다시 클라한테 바이트 보냄.
     public void run() {
+        sendNum.set(0);
         InputStream fromClient = null;
         OutputStream toClient = null;
         DataInputStream dis = null;
@@ -66,6 +70,8 @@ public class Server implements Runnable {
                 }
                 //아니라면 받은 메세지 다른 클라이언트에게 출력하기.
                 else {
+                    //보낸 스레드 수 증가
+                    sendNum.set(sendNum.get() + 1);
                     //여기도 해더넣어야하네. 이곳에 헤더정보 입력.
                     //헤더정보 메세지길이 그리고 타입 3333=상대방글 4444=종료타입
                     byte[] serverHeader = new byte[8];
@@ -83,23 +89,23 @@ public class Server implements Runnable {
                     serverHeader[6] = servertypeBytes[2];
                     serverHeader[7] = servertypeBytes[3];
 
-                    //보낸사람 제외 보내기.
+                    //모두에게 보내기.
                     for (Socket s : clients) {
-                        if (sock != s) {
-                            toClient = s.getOutputStream();
-                            dos = new DataOutputStream(toClient);
-                            dos.write(serverHeader, 0, 8);
-                            dos.writeUTF(name);
-                            dos.write(receiveBytes, 0, length);
-                            dos.flush();
-                            System.out.println(name + "이메세지 보냄");
-                        }
+                        toClient = s.getOutputStream();
+                        dos = new DataOutputStream(toClient);
+                        dos.write(serverHeader, 0, 8);
+                        dos.writeUTF(name);
+                        dos.write(receiveBytes, 0, length);
+                        dos.flush();
+                        System.out.println(name + "이메세지 보냄");
+
                     }
                 }
             }
         } catch (IOException ex) {
             System.out.println(sock + ": 에러(" + ex + ")");
             System.out.println(name+"나갔음. ");
+
         } finally {
             try {
                 if (sock != null) {
@@ -107,12 +113,41 @@ public class Server implements Runnable {
                     // 접속 후 나가버린 클라이언트인 경우 ArrayList에서 제거
                     remove(sock);
                 }
+//                fromClient = null;
+//                toClient = null;
+                System.out.println("4타입실행.");
+                //타입 444 메세지 보냄.
+                byte[] serverHeader = new byte[8];
+                int serverLength = 0;
+                int servertypetype = 4444;
+                byte[] servertypeBytes = intToByteArray(servertypetype);
+                byte[] serverLengthBytes = intToByteArray(serverLength);
+                //헤더 메세지 완성.
+                serverHeader[0] = serverLengthBytes[0];
+                serverHeader[1] = serverLengthBytes[1];
+                serverHeader[2] = serverLengthBytes[2];
+                serverHeader[3] = serverLengthBytes[3];
+                serverHeader[4] = servertypeBytes[0];
+                serverHeader[5] = servertypeBytes[1];
+                serverHeader[6] = servertypeBytes[2];
+                serverHeader[7] = servertypeBytes[3];
+                dos.write(serverHeader, 0, 8);
+                //일단 이름과 보낸 개수만.
+                for (Socket s : clients) {
+                    toClient = s.getOutputStream();
+                    dos = new DataOutputStream(toClient);
+                    dos.writeUTF(name);
+                    dos.writeInt(sendNum.get());
+                    dos.flush();
+                }
                 fromClient = null;
                 toClient = null;
             } catch (IOException ex) {
             }
         }
     }
+
+
 
 
     // 채팅 서버 메인

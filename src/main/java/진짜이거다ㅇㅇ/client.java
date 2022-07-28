@@ -28,6 +28,9 @@ class ServerHandler implements Runnable {
                 int length = byteArrayToInt(lengthBytes);
                 ///333이면 상대방메세지, 4444이면 다른 사람 종료 메세지
                 int type = byteArrayToInt(typeBytes);
+                System.out.println("헤더받음");
+                System.out.println("length" +length);
+                System.out.println("type" + type);
 
                 ///3333이면 이름과 스트링 메세지 받기.
                 if (type == 3333) {
@@ -40,7 +43,14 @@ class ServerHandler implements Runnable {
                     System.out.println(name + ": " + receiveMessage);
                 }
                 //else4444 일때는 이름과 메세지 보낸 갯수와 받은 갯수 받아서 출력.
-
+               if (type == 4444) {
+                   System.out.println("일로진입함");
+                    String name = dis.readUTF();
+                    int sendNum = dis.readInt();
+                   System.out.println(name);
+                   System.out.println(sendNum);
+                    System.out.println(name+"이 나갔습니다 || 보낸 메세지 수: "+sendNum );
+                }
             }
         } catch (IOException ex) {
             System.out.println("연결 종료 (" + ex + ")");
@@ -137,10 +147,13 @@ public class client {
             }
         } catch (IOException ex) {
             System.out.println("연결 종료 (" + ex + ")");
+            System.out.println("나 나감");
         } finally {
             try {
-                if (sock != null)
+                if (sock != null) {
                     sock.close();
+                    System.out.println("나 나감");
+                }
             } catch (IOException ex) {
             }
         }
